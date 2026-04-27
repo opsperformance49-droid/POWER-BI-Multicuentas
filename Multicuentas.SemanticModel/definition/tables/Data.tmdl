@@ -257,12 +257,13 @@ table Data
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Pedidos <' =
-			50 =
+	measure 'Pedidos <= 50 (Legacy)' =
+			
 			CALCULATE(
 			    [Total Pedidos],
-			    Data[PedidoMenorIgual50] = "Sí")
-		formatString: """TRUE"";""TRUE"";""FALSE"""
+			    Data[PedidoMenorIgual50] = "Sí"
+			)
+		formatString: 0
 		lineageTag: 05c245c5-ef21-4186-b41a-b9f268c92ce5
 
 	measure 'Pedidos > 50' =
