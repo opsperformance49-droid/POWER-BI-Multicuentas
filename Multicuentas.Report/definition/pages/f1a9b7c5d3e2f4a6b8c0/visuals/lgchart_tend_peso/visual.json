@@ -61,6 +61,11 @@
               },
               "queryRef": "Data.Inyección Piezas AA",
               "nativeQueryRef": "Inyección Piezas AA"
+                  "Property": "Peso por Pedido"
+                }
+              },
+              "queryRef": "Data.Peso por Pedido",
+              "nativeQueryRef": "Peso por Pedido"
             }
           ]
         }
