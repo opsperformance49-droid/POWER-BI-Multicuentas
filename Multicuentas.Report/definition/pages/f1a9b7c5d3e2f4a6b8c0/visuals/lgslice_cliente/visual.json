@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
-  "name": "d2e7deac15a248873db4",
+  "name": "lgslice_cliente",
   "position": {
     "x": 20,
-    "y": 225,
+    "y": 395,
     "z": 10,
-    "height": 80,
-    "width": 260,
-    "tabOrder": 3000
+    "height": 75,
+    "width": 240,
+    "tabOrder": 3500
   },
   "visual": {
     "visualType": "slicer",
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "NombreCompania"
+                  "Property": "Cliente"
                 }
               },
-              "queryRef": "Data.NombreCompania",
-              "nativeQueryRef": "NombreCompania",
+              "queryRef": "Data.Cliente",
+              "nativeQueryRef": "Cliente",
               "active": true
             }
           ]
@@ -74,7 +74,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Compañía'"
+                  "Value": "'Cliente'"
                 }
               }
             },
@@ -90,7 +90,7 @@
       ]
     },
     "syncGroup": {
-      "groupName": "NombreCompania",
+      "groupName": "Cliente",
       "fieldChanges": true,
       "filterChanges": true
     },

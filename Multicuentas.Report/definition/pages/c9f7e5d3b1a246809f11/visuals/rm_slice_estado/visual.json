@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
-  "name": "d2e7deac15a248873db4",
+  "name": "rm_slice_estado",
   "position": {
     "x": 20,
-    "y": 225,
+    "y": 315,
     "z": 10,
-    "height": 80,
-    "width": 260,
-    "tabOrder": 3000
+    "height": 90,
+    "width": 240,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "slicer",
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "NombreCompania"
+                  "Property": "Estado"
                 }
               },
-              "queryRef": "Data.NombreCompania",
-              "nativeQueryRef": "NombreCompania",
+              "queryRef": "Data.Estado",
+              "nativeQueryRef": "Estado",
               "active": true
             }
           ]
@@ -41,7 +41,7 @@
             "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "'Basic'"
                 }
               }
             }
@@ -60,37 +60,10 @@
             }
           }
         }
-      ],
-      "header": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Compañía'"
-                }
-              }
-            },
-            "textSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "8D"
-                }
-              }
-            }
-          }
-        }
       ]
     },
     "syncGroup": {
-      "groupName": "NombreCompania",
+      "groupName": "Estado",
       "fieldChanges": true,
       "filterChanges": true
     },

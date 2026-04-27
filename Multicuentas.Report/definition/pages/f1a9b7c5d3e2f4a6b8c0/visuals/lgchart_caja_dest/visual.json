@@ -1,0 +1,94 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
+  "name": "lgchart_caja_dest",
+  "position": {
+    "x": 660,
+    "y": 190,
+    "z": 10,
+    "height": 240,
+    "width": 350,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "NombreCompania"
+                }
+              },
+              "queryRef": "Data.NombreCompania",
+              "nativeQueryRef": "NombreCompania",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Cajas por Pedido"
+                }
+              },
+              "queryRef": "Data.Cajas por Pedido",
+              "nativeQueryRef": "Cajas por Pedido"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Cajas Promedio por Compañía"
+                }
+              },
+              "queryRef": "Data.Cajas Promedio por Compañía",
+              "nativeQueryRef": "Cajas Promedio por Compañía"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Cajas"
+                      }
+                    },
+                    "Property": "TotalCajas"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
