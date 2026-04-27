@@ -42,6 +42,25 @@
                       "Entity": "Data"
                     }
                   },
+                  "Property": "Inyección Piezas"
+                }
+              },
+              "queryRef": "Data.Inyección Piezas",
+              "nativeQueryRef": "Inyección Piezas"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Inyección Piezas AA"
+                }
+              },
+              "queryRef": "Data.Inyección Piezas AA",
+              "nativeQueryRef": "Inyección Piezas AA"
                   "Property": "Peso por Pedido"
                 }
               },

@@ -23,6 +23,11 @@
                       "Entity": "Data"
                     }
                   },
+                  "Property": "FechaDocumento"
+                }
+              },
+              "queryRef": "Data.FechaDocumento",
+              "nativeQueryRef": "FechaDocumento",
                   "Property": "NombreCompania"
                 }
               },
