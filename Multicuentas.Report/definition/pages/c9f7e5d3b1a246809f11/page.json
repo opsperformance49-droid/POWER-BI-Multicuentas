@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "c9f7e5d3b1a246809f11",
+  "displayName": "Resumen por Marca",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1400
+}
