@@ -1,0 +1,131 @@
+table Cajas
+	lineageTag: b529ed9b-3a41-4aaa-a720-bfb67daf70be
+
+	measure 'Total Cajas' =
+			
+			SUM(Cajas[TotalCajas])
+		formatString: 0
+		lineageTag: 5099a135-88b3-484d-9f87-3564eb255403
+
+	measure 'Peso Total' =
+			
+			SUM(Cajas[PesoTotal])
+		lineageTag: 2ad2ecc6-0b81-44ac-9f3d-871894ff39a0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Peso Promedio Caja' =
+			
+			DIVIDE([Peso Total], [Total Cajas])
+		lineageTag: 3fb3320a-9f73-442d-b7d0-6e80387cbeef
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'HTML Cajas por Compania' =
+			
+			VAR Compania = SELECTEDVALUE(Cajas[NombreCompania], "Todas")
+			
+			VAR TotalCajas = FORMAT([Total Cajas], "#,##0")
+			VAR PesoTotal = FORMAT([Peso Total], "#,##0")
+			VAR Promedio = FORMAT([Peso Promedio Caja], "0.00")
+			
+			RETURN
+			"
+			<div style='font-family:Segoe UI; background:#0f172a; padding:20px; border-radius:20px; color:white;'>
+			
+			<div style='font-size:22px; font-weight:700; margin-bottom:12px;'>
+			📦 Cajas por Compañía
+			</div>
+			
+			<div style='font-size:14px; color:#94a3b8; margin-bottom:18px;'>
+			" & Compania & "
+			</div>
+			
+			<div style='display:grid; grid-template-columns:repeat(3,1fr); gap:14px;'>
+			
+			  <div style='background:#1e293b; padding:16px; border-radius:16px;'>
+			    <div style='font-size:12px; color:#94a3b8;'>Total cajas</div>
+			    <div style='font-size:28px; font-weight:800;'>" & TotalCajas & "</div>
+			  </div>
+			
+			  <div style='background:#1e293b; padding:16px; border-radius:16px;'>
+			    <div style='font-size:12px; color:#94a3b8;'>Peso total</div>
+			    <div style='font-size:28px; font-weight:800;'>" & PesoTotal & "</div>
+			  </div>
+			
+			  <div style='background:#1e293b; padding:16px; border-radius:16px;'>
+			    <div style='font-size:12px; color:#94a3b8;'>Peso promedio por caja</div>
+			    <div style='font-size:28px; font-weight:800;'>" & Promedio & "</div>
+			  </div>
+			
+			</div>
+			
+			</div>
+			"
+		lineageTag: 5f4b5832-7a2e-45c8-83b5-ab15a7a03958
+
+	column IDEmbarque
+		dataType: string
+		sourceProviderType: varchar(15)
+		lineageTag: a92eef6e-b598-4a9a-b0b5-027d9a41420e
+		summarizeBy: none
+		sourceColumn: IDEmbarque
+
+		annotation SummarizationSetBy = Automatic
+
+	column IDCompania
+		dataType: double
+		isNullable: false
+		sourceProviderType: decimal(8, 0)
+		lineageTag: 9523d864-9a63-4523-b846-91ca5d8c20e6
+		summarizeBy: sum
+		sourceColumn: IDCompania
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NombreCompania
+		dataType: string
+		isNullable: false
+		sourceProviderType: varchar(100)
+		lineageTag: bab6bbf6-9c0d-440f-92ee-4966167d59d1
+		summarizeBy: none
+		sourceColumn: NombreCompania
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalCajas
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 6f33ec04-75be-47a1-a84f-b2caa94d9190
+		summarizeBy: sum
+		sourceColumn: TotalCajas
+
+		annotation SummarizationSetBy = Automatic
+
+	column PesoTotal
+		dataType: double
+		isNullable: false
+		sourceProviderType: decimal(38, 2)
+		lineageTag: f1a41860-33a3-453d-bc9e-092de4910777
+		summarizeBy: sum
+		sourceColumn: PesoTotal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Cajas = m
+		mode: directQuery
+		source =
+				let
+				    Origen = Sql.Database("204.232.237.135", "recsolog_wms", [Query="SELECT#(lf)    ee.IDEmbarque,#(lf)    ds.IDCompania,#(lf)    c.Nombre AS NombreCompania,#(lf)#(lf)    COUNT(*) AS TotalCajas,#(lf)    ISNULL(SUM(ee.Peso), 0) AS PesoTotal#(lf)#(lf)FROM EtiquetaEmpaque ee#(lf)#(lf)INNER JOIN DocumentoSalida ds#(lf)    ON ds.IDDocumentoSalida = ee.IDEmbarque#(lf)#(lf)INNER JOIN Compania c#(lf)    ON c.IDCompania = ds.IDCompania#(lf)#(lf)WHERE ds.IDCompania NOT IN (39, 99)#(lf)#(lf)GROUP BY#(lf)    ee.IDEmbarque,#(lf)    ds.IDCompania,#(lf)    c.Nombre;"])
+				in
+				    Origen
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

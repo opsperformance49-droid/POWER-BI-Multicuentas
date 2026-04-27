@@ -1,0 +1,19 @@
+model Model
+	culture: es-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Data","Cajas"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Data
+ref table Cajas
+
+ref cultureInfo es-US
+

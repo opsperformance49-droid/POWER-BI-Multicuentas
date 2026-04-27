@@ -1,0 +1,59 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
+  "name": "5771ed2d0d057d7a3838",
+  "position": {
+    "x": 288.476883701512,
+    "y": 10.408959721188578,
+    "z": 2000,
+    "height": 44.609827376522475,
+    "width": 298.88584342270059,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Cajas"
+                    }
+                  },
+                  "Property": "NombreCompania"
+                }
+              },
+              "queryRef": "Cajas.NombreCompania",
+              "nativeQueryRef": "NombreCompania",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "data": [
+        {
+          "properties": {
+            "mode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Dropdown'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {}
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

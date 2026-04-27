@@ -1,0 +1,808 @@
+table Data
+	lineageTag: 629454e1-958d-4f0d-aa59-574777ae3362
+
+	measure '% Avance Marca' =
+			
+			DIVIDE(
+			    SUM(Data[CantidadSurtida]),
+			    SUM(Data[CantidadRequerida]),
+			    0
+			)
+		lineageTag: 46380db8-13b5-4671-82ea-01eae2d1b0f5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Estatus Marca' =
+			
+			VAR _estatus =
+			    SELECTEDVALUE(Data[EstadoSurtido])
+			RETURN
+			    IF(NOT ISBLANK(_estatus), _estatus, "Sin estado")
+		lineageTag: d58125a2-a0f4-4469-a778-7d20770e3590
+
+	measure 'HTML Compañias' =
+			
+			VAR TablaCompanias =
+			    ADDCOLUMNS(
+			        SUMMARIZE(
+			            Data,
+			            Data[IDCompania],
+			            Data[NombreCompania]
+			        ),
+			        "Pct", CALCULATE(DIVIDE(SUM(Data[CantidadSurtida]), SUM(Data[CantidadRequerida]), 0)),
+			        "Req", CALCULATE(SUM(Data[CantidadRequerida])),
+			        "Sur", CALCULATE(SUM(Data[CantidadSurtida])),
+			        "Est", CALCULATE(SELECTEDVALUE(Data[EstadoSurtido], "Sin estado")),
+			
+			        "TotalCajasCompania",
+			            VAR Comp = [IDCompania]
+			            RETURN
+			                CALCULATE(
+			                    SUM(Cajas[TotalCajas]),
+			                    TREATAS({Comp}, Cajas[IDCompania])
+			                ),
+			
+			        "PesoTotalCompania",
+			            VAR Comp = [IDCompania]
+			            RETURN
+			                CALCULATE(
+			                    SUM(Cajas[PesoTotal]),
+			                    TREATAS({Comp}, Cajas[IDCompania])
+			                ),
+			
+			        "PesoPromCajaCompania",
+			            VAR Comp = [IDCompania]
+			            VAR TotalCajasCalc =
+			                CALCULATE(
+			                    SUM(Cajas[TotalCajas]),
+			                    TREATAS({Comp}, Cajas[IDCompania])
+			                )
+			            VAR PesoTotalCalc =
+			                CALCULATE(
+			                    SUM(Cajas[PesoTotal]),
+			                    TREATAS({Comp}, Cajas[IDCompania])
+			                )
+			            RETURN
+			                DIVIDE(PesoTotalCalc, TotalCajasCalc),
+			
+			        "Logo",
+			            SWITCH(
+			                LOWER(TRIM([NombreCompania])),
+			                "montana", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSibQZxKXn33ehXzKfJcY4OdwD_3_R2hhQ9qQ&s",
+			                "edifier", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQfUuyE09TByjpHMH-Fg-Co47f-2esbGpyaA&s",
+			                "liverpool", "https://play-lh.googleusercontent.com/FwrxfHaknUKLneazGpPsjJvQ4mUYKJkccj-efHNeXQISwCwqC9ymNAnqlAY5J5oHIOc",
+			                "food proteins", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjLYBBs-5-ZKonMEu3zJhhw0NdGFLhs_pBLQ&s",
+			                "edf sound", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQfUuyE09TByjpHMH-Fg-Co47f-2esbGpyaA&s",
+			                "fiserv", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKYkdyn9TfCaU2mvzXSPyzvC81K8QbX6NR0A&s",
+			                "glexico", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4nGlPBB3jd39hcfu9iy2TZNhlU87eccPmUQ&s",
+			                BLANK()
+			            )
+			    )
+			
+			RETURN
+			"<div style='display:flex; overflow-x:auto; gap:8px; font-family:Segoe UI; padding-bottom:6px;'>"
+			&
+			CONCATENATEX(
+			    TablaCompanias,
+			
+			    VAR Compania = [NombreCompania]
+			    VAR Pct = [Pct]
+			    VAR Req = [Req]
+			    VAR Sur = [Sur]
+			    VAR Est = [Est]
+			    VAR Logo = [Logo]
+			
+			    VAR TotalCajas = COALESCE([TotalCajasCompania], 0)
+			    VAR PesoTotal = COALESCE([PesoTotalCompania], 0)
+			    VAR PesoPromCaja = COALESCE([PesoPromCajaCompania], 0)
+			
+			    VAR ColorBarra =
+			        SWITCH(
+			            TRUE(),
+			            Pct >= 0.95, "#22c55e",
+			            Pct >= 0.70, "#f59e0b",
+			            Pct >= 0.40, "#3b82f6",
+			            "#ef4444"
+			        )
+			
+			    VAR ColorEstado =
+			        SWITCH(
+			            TRUE(),
+			            Est IN {"Cerrado","Surtido completo","Surtido"}, "#22c55e",
+			            Est IN {"Surtiendo","Cargando","Surtido parcial"}, "#f59e0b",
+			            Est IN {"Por surtir","Registrado"}, "#3b82f6",
+			            "#ef4444"
+			        )
+			
+			    VAR HtmlLogo =
+			        IF(
+			            NOT ISBLANK(Logo),
+			            "<img src='" & Logo & "' style='width:100%; height:100%; object-fit:contain; border-radius:5px;'/>",
+			            "<div style='font-size:7px; color:#9ca3af;'>Logo</div>"
+			        )
+			
+			    RETURN
+			    "<div style='
+			        min-width:160px;
+			        max-width:160px;
+			        background:linear-gradient(180deg,#111827 0%, #1f2937 100%);
+			        border-radius:12px;
+			        padding:8px;
+			        color:white;
+			        box-shadow:0 4px 12px rgba(0,0,0,0.25);
+			        flex:0 0 auto;
+			    '>
+			
+			        <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;'>
+			            <div style='font-size:7px; color:#9ca3af; letter-spacing:1px; text-transform:uppercase;'>
+			                Compañía
+			            </div>
+			
+			            <div style='
+			                width:24px;
+			                height:24px;
+			                border-radius:5px;
+			                background:#ffffff;
+			                display:flex;
+			                align-items:center;
+			                justify-content:center;
+			                overflow:hidden;
+			                padding:2px;
+			            '>"
+			            & HtmlLogo &
+			            "</div>
+			        </div>
+			
+			        <div style='font-size:11px; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;'>
+			            " & Compania & "
+			        </div>
+			
+			        <div style='margin-bottom:5px;'>
+			            <div style='font-size:7px; color:#9ca3af; margin-bottom:2px;'>Estatus</div>
+			            <div style='
+			                display:inline-block;
+			                padding:2px 6px;
+			                border-radius:999px;
+			                background:" & ColorEstado & ";
+			                font-size:7px;
+			                font-weight:600;
+			            '>" & Est & "</div>
+			        </div>
+			
+			        <div style='margin-bottom:5px;'>
+			            <div style='font-size:7px; color:#9ca3af;'>Avance</div>
+			            <div style='font-size:16px; font-weight:700;'>
+			                " & FORMAT(Pct, "0.0%") & "
+			            </div>
+			        </div>
+			
+			        <div style='width:100%; height:5px; background:#374151; border-radius:999px; overflow:hidden; margin-bottom:6px;'>
+			            <div style='width:" & FORMAT(Pct * 100, "0") & "%; height:5px; background:" & ColorBarra & ";'></div>
+			        </div>
+			
+			        <div style='display:flex; justify-content:space-between; gap:4px; margin-bottom:5px;'>
+			            <div style='background:#111827; border-radius:7px; padding:5px; width:48%;'>
+			                <div style='font-size:7px; color:#9ca3af;'>Surtida</div>
+			                <div style='font-size:11px; font-weight:700;'>" & FORMAT(Sur, "#,##0") & "</div>
+			            </div>
+			
+			            <div style='background:#111827; border-radius:7px; padding:5px; width:48%;'>
+			                <div style='font-size:7px; color:#9ca3af;'>Requerida</div>
+			                <div style='font-size:11px; font-weight:700;'>" & FORMAT(Req, "#,##0") & "</div>
+			            </div>
+			        </div>
+			
+			        <div style='display:flex; justify-content:space-between; gap:4px;'>
+			            <div style='background:#0f172a; border:1px solid #334155; border-radius:7px; padding:5px; width:32%;'>
+			                <div style='font-size:7px; color:#9ca3af;'>Cajas</div>
+			                <div style='font-size:11px; font-weight:700; color:#38bdf8;'>" & FORMAT(TotalCajas, "#,##0") & "</div>
+			            </div>
+			
+			            <div style='background:#0f172a; border:1px solid #334155; border-radius:7px; padding:5px; width:32%;'>
+			                <div style='font-size:7px; color:#9ca3af;'>Peso total</div>
+			                <div style='font-size:11px; font-weight:700; color:#facc15;'>" & FORMAT(PesoTotal, "#,##0.00") & "</div>
+			            </div>
+			
+			            <div style='background:#0f172a; border:1px solid #334155; border-radius:7px; padding:5px; width:32%;'>
+			                <div style='font-size:7px; color:#9ca3af;'>Peso prom.</div>
+			                <div style='font-size:11px; font-weight:700; color:#22c55e;'>" & FORMAT(PesoPromCaja, "#,##0.00") & "</div>
+			            </div>
+			        </div>
+			
+			    </div>",
+			    ""
+			)
+			&
+			"</div>"
+		lineageTag: da129dff-f1a3-494d-bb82-fd4872fe1e4b
+
+	measure 'Total Pedidos' =
+			
+			DISTINCTCOUNT(Data[IDDocumentoSalida])
+		formatString: 0
+		lineageTag: e6c15720-1822-4931-bf99-4c099a258895
+
+	measure 'Total Piezas Requeridas' =
+			
+			SUM(Data[CantidadRequerida])
+		lineageTag: 06f06d87-dcc2-4ffc-bdd5-0a42c891cf90
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Piezas Surtidas' =
+			
+			SUM(Data[CantidadSurtida])
+		lineageTag: cde050bc-9cd4-4a1e-bf28-1f3a6707cf54
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Fill Rate %' =
+			
+			DIVIDE([Total Piezas Surtidas], [Total Piezas Requeridas])
+		lineageTag: 106f3733-c3d0-4f5a-b8d2-f0d8143ce11b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'SKUs Promedio' =
+			
+			AVERAGE(Data[Total_SKUs])
+		lineageTag: ca51c26f-f10c-4aae-80f6-91067efc7589
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Piezas Promedio' =
+			
+			AVERAGE(Data[NumeroPiezas])
+		lineageTag: 0a11fa93-f314-4195-82c9-1daa648a4b56
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Pedidos <' =
+			50 =
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[PedidoMenorIgual50] = "Sí")
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 05c245c5-ef21-4186-b41a-b9f268c92ce5
+
+	measure 'Pedidos > 50' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[PedidoMenorIgual50] = "No"
+			)
+		formatString: 0
+		lineageTag: f2a31687-0246-448e-9e5f-b15b73fd408c
+
+	measure 'Pedidos con SVR' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[Contiene_SVR] = "Sí")
+		formatString: 0
+		lineageTag: 85f01977-aea8-4c39-9729-76bd2fe703ee
+
+	measure 'Pedidos sin SVR' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[Contiene_SVR] = "No")
+		formatString: 0
+		lineageTag: ebedfaab-73be-4681-bd10-8f982deca555
+
+	measure 'Pedidos Cerrados' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[Estado] = "Cerrada")
+		formatString: 0
+		lineageTag: 38ae51a8-3fbf-4494-b0e4-7cb9d5458335
+
+	measure 'Pedidos En Proceso' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[Estado] = "En proceso")
+		formatString: 0
+		lineageTag: 1250c2a5-ed22-4721-8409-d12768bb0c6f
+
+	measure 'Pedidos Antes 12' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[IndicadorHoraCaida] = "Antes de las 12")
+		formatString: 0
+		lineageTag: 6137732a-b1fd-41cd-a9e5-dbcbdba5fdc4
+
+	measure 'Pedidos Después 12' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[IndicadorHoraCaida] = "Después de las 12")
+		formatString: 0
+		lineageTag: d8d4af96-e6d4-4677-8e10-5f8953d36714
+
+	measure 'Entrega Confirmada %' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        [Total Pedidos],
+			        Data[EstadoEmbarque] = "Entrega confirmada"
+			    ),
+			    [Total Pedidos]
+			)
+		lineageTag: 3b6acbe7-ff0c-403d-9ea6-75a98a164f99
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tiempo Ciclo Promedio Hrs' =
+			
+			AVERAGEX(
+			    FILTER(
+			        Data,
+			        Data[Estado] = "Cerrada"
+			            && Data[FechaCierre] <> "En proceso"
+			            && NOT ISBLANK(Data[FechaDocumento])
+			    ),
+			    DATEDIFF(
+			        Data[FechaDocumento],
+			        DATEVALUE(Data[FechaCierre]) + TIMEVALUE(Data[HoraCierre]),
+			        MINUTE
+			    ) / 60
+			)
+		lineageTag: ea7b7141-976d-4dca-a164-fe70ba659de5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Pedidos Menor Igual 50' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[PedidoMenorIgual50] = "Sí"
+			)
+		formatString: 0
+		lineageTag: afbf818e-f07d-4d62-b7af-ee1f6bb95167
+
+	measure 'Pedidos Mayor 50' =
+			
+			CALCULATE(
+			    [Total Pedidos],
+			    Data[PedidoMenorIgual50] = "No"
+			)
+		formatString: 0
+		lineageTag: 9806ac8a-506b-47b8-8ade-8c4beed1630c
+
+	measure 'Dashboard HTML' =
+			
+			VAR TotalPedidos = FORMAT([Total Pedidos], "#,##0")
+			VAR FillRate = FORMAT([Fill Rate %], "0.0%")
+			VAR PiezasReq = FORMAT([Total Piezas Requeridas], "#,##0")
+			VAR PiezasSur = FORMAT([Total Piezas Surtidas], "#,##0")
+			VAR SKUsProm = FORMAT([SKUs Promedio], "0.0")
+			VAR PiezasProm = FORMAT([Piezas Promedio], "0.0")
+			VAR Cerrados = FORMAT([Pedidos Cerrados], "#,##0")
+			VAR EnProceso = FORMAT([Pedidos En Proceso], "#,##0")
+			VAR Antes12 = FORMAT([Pedidos Antes 12], "#,##0")
+			VAR Despues12 = FORMAT([Pedidos Después 12], "#,##0")
+			VAR Menor50 = FORMAT([Pedidos Menor Igual 50], "#,##0")
+			VAR Mayor50 = FORMAT([Pedidos Mayor 50], "#,##0")
+			VAR Entrega = FORMAT([Entrega Confirmada %], "0.0%")
+			VAR Ciclo = FORMAT([Tiempo Ciclo Promedio Hrs], "0.0")
+			
+			RETURN
+			"
+			<div style='font-family:Segoe UI, Arial; background:#0f172a; padding:20px; border-radius:22px; color:white;'>
+			
+			<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;'>
+			  <div>
+			    <div style='font-size:26px; font-weight:800;'>Dashboard Operativo</div>
+			    <div style='font-size:13px; color:#94a3b8;'>Pedidos, surtido, cierre y embarque</div>
+			  </div>
+			  <div style='background:#1e293b; padding:10px 16px; border-radius:14px; font-size:13px; color:#cbd5e1;'>
+			    Filtrar por semana o rango de fechas
+			  </div>
+			</div>
+			
+			<div style='display:grid; grid-template-columns:repeat(4,1fr); gap:14px;'>
+			
+			  <div style='background:linear-gradient(135deg,#2563eb,#1d4ed8); padding:18px; border-radius:18px;'>
+			    <div style='font-size:13px; opacity:.85;'>Total pedidos</div>
+			    <div style='font-size:34px; font-weight:800;'>" & TotalPedidos & "</div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>Fill rate</div>
+			    <div style='font-size:34px; font-weight:800; color:#22c55e;'>" & FillRate & "</div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>Piezas requeridas</div>
+			    <div style='font-size:34px; font-weight:800;'>" & PiezasReq & "</div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>Piezas surtidas</div>
+			    <div style='font-size:34px; font-weight:800;'>" & PiezasSur & "</div>
+			  </div>
+			
+			</div>
+			
+			<div style='margin-top:18px; display:grid; grid-template-columns:2fr 1fr; gap:14px;'>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:18px; font-weight:700; margin-bottom:12px;'>Operación y cierre</div>
+			
+			    <div style='display:grid; grid-template-columns:repeat(4,1fr); gap:12px;'>
+			
+			      <div>
+			        <div style='font-size:12px; color:#94a3b8;'>Cerrados</div>
+			        <div style='font-size:26px; font-weight:800; color:#22c55e;'>" & Cerrados & "</div>
+			      </div>
+			
+			      <div>
+			        <div style='font-size:12px; color:#94a3b8;'>En proceso</div>
+			        <div style='font-size:26px; font-weight:800; color:#f59e0b;'>" & EnProceso & "</div>
+			      </div>
+			
+			      <div>
+			        <div style='font-size:12px; color:#94a3b8;'>Tiempo ciclo prom.</div>
+			        <div style='font-size:26px; font-weight:800;'>" & Ciclo & " hrs</div>
+			      </div>
+			
+			      <div>
+			        <div style='font-size:12px; color:#94a3b8;'>Entrega confirmada</div>
+			        <div style='font-size:26px; font-weight:800; color:#38bdf8;'>" & Entrega & "</div>
+			      </div>
+			
+			    </div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:18px; font-weight:700; margin-bottom:12px;'>Complejidad</div>
+			
+			    <div style='display:grid; grid-template-columns:1fr 1fr; gap:12px;'>
+			
+			      <div style='background:#1e293b; padding:14px; border-radius:14px;'>
+			        <div style='font-size:12px; color:#94a3b8;'>≤ 50 piezas</div>
+			        <div style='font-size:24px; font-weight:800;'>" & Menor50 & "</div>
+			      </div>
+			
+			      <div style='background:#1e293b; padding:14px; border-radius:14px;'>
+			        <div style='font-size:12px; color:#94a3b8;'>> 50 piezas</div>
+			        <div style='font-size:24px; font-weight:800;'>" & Mayor50 & "</div>
+			      </div>
+			
+			    </div>
+			  </div>
+			
+			</div>
+			
+			<div style='margin-top:18px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px;'>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>Antes de las 12</div>
+			    <div style='font-size:30px; font-weight:800;'>" & Antes12 & "</div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>Después de las 12</div>
+			    <div style='font-size:30px; font-weight:800;'>" & Despues12 & "</div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>SKUs promedio</div>
+			    <div style='font-size:30px; font-weight:800;'>" & SKUsProm & "</div>
+			  </div>
+			
+			  <div style='background:#111827; padding:18px; border-radius:18px; border:1px solid #334155;'>
+			    <div style='font-size:13px; color:#94a3b8;'>Piezas promedio</div>
+			    <div style='font-size:30px; font-weight:800;'>" & PiezasProm & "</div>
+			  </div>
+			
+			</div>
+			
+			</div>
+			"
+		lineageTag: f79eb001-0c8d-48cf-b759-7088f64ecaa7
+
+	column IDDocumentoSalida
+		dataType: string
+		lineageTag: e032561b-f956-4b68-9e58-551ebdf28a38
+		summarizeBy: none
+		sourceColumn: IDDocumentoSalida
+
+		annotation SummarizationSetBy = Automatic
+
+	column TipoSalida
+		dataType: double
+		lineageTag: a5f9d3af-9bc0-4b90-b12a-44c8856c8bf2
+		summarizeBy: sum
+		sourceColumn: TipoSalida
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TipoSalidaDescripcion
+		dataType: string
+		lineageTag: be0744e2-8a67-4d97-b48f-f607fea4340d
+		summarizeBy: none
+		sourceColumn: TipoSalidaDescripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaDocumento
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 87611ba5-864f-495c-9a41-122f9d46451f
+		summarizeBy: none
+		sourceColumn: FechaDocumento
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaPedido
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8aca99cd-ca07-4c0d-bb8b-cdc64fc3a068
+		summarizeBy: none
+		sourceColumn: FechaPedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column HoraPedido
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: db5953c8-8466-430e-9a3c-25d003001525
+		summarizeBy: none
+		sourceColumn: HoraPedido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column HoraEnteraPedido
+		dataType: string
+		lineageTag: 494cef7b-ce5c-469a-9b6d-81b08661389b
+		summarizeBy: none
+		sourceColumn: HoraEnteraPedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column IDCompania
+		dataType: double
+		lineageTag: 97e6f860-e828-444d-a08e-f546d2b7215a
+		summarizeBy: sum
+		sourceColumn: IDCompania
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NombreCompania
+		dataType: string
+		lineageTag: 0c8b4b4a-7154-497a-b160-a9e2fd0a82ab
+		summarizeBy: none
+		sourceColumn: NombreCompania
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreDestino
+		dataType: string
+		lineageTag: 69f988a5-618e-416c-9000-d6383c3afa9f
+		summarizeBy: none
+		sourceColumn: NombreDestino
+
+		annotation SummarizationSetBy = Automatic
+
+	column DelegacionDestino
+		dataType: string
+		lineageTag: 633c0614-d1f5-4bf4-830f-9b75f2363a2b
+		summarizeBy: none
+		sourceColumn: DelegacionDestino
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstadoFederativo
+		dataType: string
+		lineageTag: f5d5c744-5677-47c0-b514-db30f7d7012c
+		summarizeBy: none
+		sourceColumn: EstadoFederativo
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoPostal
+		dataType: string
+		lineageTag: 4c36d437-3d58-41f9-9d39-e560008bada5
+		summarizeBy: none
+		sourceColumn: CodigoPostal
+
+		annotation SummarizationSetBy = Automatic
+
+	column CantidadRequerida
+		dataType: double
+		lineageTag: 6de9d7d7-f96d-47d9-bc14-e63090dbcf6f
+		summarizeBy: sum
+		sourceColumn: CantidadRequerida
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CantidadSurtida
+		dataType: double
+		lineageTag: 3ac5a21c-e132-41ab-b92c-f6f6d76d4107
+		summarizeBy: sum
+		sourceColumn: CantidadSurtida
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Total_SKUs
+		dataType: int64
+		formatString: 0
+		lineageTag: bc1d5560-f782-43f2-a187-8d40742cba3a
+		summarizeBy: sum
+		sourceColumn: Total_SKUs
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contiene_SVR
+		dataType: string
+		lineageTag: 17b7cfb7-1c74-41e4-a3a9-f969b43f34f4
+		summarizeBy: none
+		sourceColumn: Contiene_SVR
+
+		annotation SummarizationSetBy = Automatic
+
+	column IDEstadoSurtido
+		dataType: double
+		lineageTag: 7acf2743-e2f7-4ccf-9cdd-259ec6b93dd1
+		summarizeBy: sum
+		sourceColumn: IDEstadoSurtido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EstadoSurtido
+		dataType: string
+		lineageTag: 4548bc8a-dab8-4fab-a44e-b602440fb961
+		summarizeBy: none
+		sourceColumn: EstadoSurtido
+
+		annotation SummarizationSetBy = Automatic
+
+	column IDEstadoEmbarque
+		dataType: double
+		lineageTag: 1fdc2fdb-9f94-4467-b290-f47eb2fbe947
+		summarizeBy: sum
+		sourceColumn: IDEstadoEmbarque
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EstadoEmbarque
+		dataType: string
+		lineageTag: 17e664ac-4c28-47e4-9f4b-d5a66d57fd2c
+		summarizeBy: none
+		sourceColumn: EstadoEmbarque
+
+		annotation SummarizationSetBy = Automatic
+
+	column HoraCaida
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: fe7b6d61-4e9c-497f-81e7-f3532745dd9e
+		summarizeBy: none
+		sourceColumn: HoraCaida
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column IndicadorHoraCaida
+		dataType: string
+		lineageTag: 5d498abb-6e21-41d4-a719-4e9695aa1861
+		summarizeBy: none
+		sourceColumn: IndicadorHoraCaida
+
+		annotation SummarizationSetBy = Automatic
+
+	column HoraCierre
+		dataType: string
+		lineageTag: 63c92218-fc59-4908-bef2-cf0ec7f826e6
+		summarizeBy: none
+		sourceColumn: HoraCierre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Estado
+		dataType: string
+		lineageTag: 79fc0557-485a-4850-ae5f-fa73f1294ccf
+		summarizeBy: none
+		sourceColumn: Estado
+
+		annotation SummarizationSetBy = Automatic
+
+	column UltimoOperador
+		dataType: string
+		lineageTag: 3b54ad11-d820-4a88-a6cd-dcf41864145f
+		summarizeBy: none
+		sourceColumn: UltimoOperador
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumeroPiezas
+		dataType: double
+		lineageTag: d879223d-861b-472a-b139-e0c94f2e0757
+		summarizeBy: sum
+		sourceColumn: NumeroPiezas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PedidoMenorIgual50
+		dataType: string
+		lineageTag: dd11b1fd-4bc9-4c86-be62-31322ebf5a23
+		summarizeBy: none
+		sourceColumn: PedidoMenorIgual50
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: d7ca71fb-d906-459b-9526-0171c4208880
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column MarcaPedido
+		dataType: string
+		lineageTag: 4c06f548-538e-47bd-b39f-e165eb34693e
+		summarizeBy: none
+		sourceColumn: MarcaPedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Supervisores
+		dataType: string
+		lineageTag: 3de72a5b-2f9a-47c5-9f5e-64a98d0c5302
+		summarizeBy: none
+		sourceColumn: Supervisores
+
+		annotation SummarizationSetBy = Automatic
+
+	column SemanaTexto
+		dataType: string
+		lineageTag: 13fc05f5-159b-4904-9490-bd8cdc83f97b
+		summarizeBy: none
+		sourceColumn: SemanaTexto
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaCierre
+		dataType: string
+		isNullable: false
+		sourceProviderType: varchar(10)
+		lineageTag: 2e0406a4-8187-424c-a828-6cba74ad587f
+		summarizeBy: none
+		sourceColumn: FechaCierre
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Data = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("204.232.237.135", "RECSOLOG_WMS", [Query="SELECT#(lf)    ds.IDDocumentoSalida,#(lf)#(lf)    CASE #(lf)        WHEN ds.IDDocumentoSalida LIKE 'MK%' THEN 11#(lf)        ELSE ds.IDTipoSalida#(lf)    END AS TipoSalida,#(lf)#(lf)    CASE #(lf)        WHEN ds.IDDocumentoSalida LIKE 'MK%' THEN 'Marketing'#(lf)        WHEN ds.IDTipoSalida = 6 THEN 'Ecommerce'#(lf)        ELSE 'General'#(lf)    END AS TipoSalidaDescripcion,#(lf)#(lf)    ds.FechaDocumento,#(lf)    CAST(ds.FechaDocumento AS DATE) AS FechaPedido,#(lf)    CONCAT('Semana ', DATEPART(WEEK, ds.FechaDocumento)) AS SemanaTexto,#(lf)    CAST(ds.FechaDocumento AS TIME) AS HoraPedido,#(lf)#(lf)    FORMAT(#(lf)        DATEADD(HOUR, DATEDIFF(HOUR, 0, ds.FechaDocumento), 0),#(lf)        'hh:mm tt'#(lf)    ) AS HoraEnteraPedido,#(lf)#(lf)    ds.IDCompania,#(lf)    c.Nombre AS NombreCompania,#(lf)#(lf)    d.Nombre AS NombreDestino,#(lf)    d.DelegacionMunicipio AS DelegacionDestino,#(lf)    d.EstadoFederativo,#(lf)    d.CodigoPostal,#(lf)#(lf)    Totales.CantidadRequerida,#(lf)    Totales.CantidadSurtida,#(lf)    Totales.Total_SKUs,#(lf)#(lf)    CASE WHEN ConteoSVR.Conteo = 1 THEN 'Sí' ELSE 'No' END AS Contiene_SVR,#(lf)#(lf)    Totales.IDEstadoSurtido,#(lf)#(lf)    CASE Totales.IDEstadoSurtido#(lf)        WHEN 1 THEN 'Por surtir'#(lf)        WHEN 2 THEN 'Surtido parcial'#(lf)        WHEN 3 THEN 'Surtido completo'#(lf)        WHEN 4 THEN 'Surtido incompleto'#(lf)        WHEN 5 THEN 'Surtiendo'#(lf)        WHEN 6 THEN 'Surtido'#(lf)        WHEN 7 THEN 'Registrado'#(lf)        WHEN 8 THEN 'Cargando'#(lf)        WHEN 9 THEN 'Cerrado'#(lf)        ELSE 'Sin estado'#(lf)    END AS EstadoSurtido,#(lf)#(lf)    ISNULL(Embarque.IDEstadoEmbarque, 0) AS IDEstadoEmbarque,#(lf)#(lf)    CASE ISNULL(Embarque.IDEstadoEmbarque, 0)#(lf)        WHEN 1 THEN 'Creado'#(lf)        WHEN 2 THEN 'Programado'#(lf)        WHEN 3 THEN 'Liberado'#(lf)        WHEN 4 THEN 'Surtiendo'#(lf)        WHEN 5 THEN 'Empacando'#(lf)        WHEN 6 THEN 'Surtido/Cargando/Listo cierre'#(lf)        WHEN 7 THEN 'Cerrado'#(lf)        WHEN 8 THEN 'En tránsito'#(lf)        WHEN 9 THEN 'Entrega confirmada'#(lf)        WHEN 10 THEN 'Cancelado por devolución'#(lf)        ELSE 'Sin estado'#(lf)    END AS EstadoEmbarque,#(lf)#(lf)    CONVERT(TIME(0), ds.FechaDocumento) AS HoraCaida,#(lf)#(lf)    CASE #(lf)        WHEN CONVERT(TIME(0), ds.FechaDocumento) < '12:00:00'#(lf)        THEN 'Antes de las 12'#(lf)        ELSE 'Después de las 12'#(lf)    END AS IndicadorHoraCaida,#(lf)#(lf)    -- ✅ FECHA DE CIERRE AGREGADA#(lf)    ISNULL(CONVERT(VARCHAR(10), UltimoMov.FechaHoraCierre, 23), 'En proceso') AS FechaCierre,#(lf)#(lf)    ISNULL(CONVERT(VARCHAR(8), UltimoMov.FechaHoraCierre, 108), 'En proceso') AS HoraCierre,#(lf)#(lf)    CASE #(lf)        WHEN UltimoMov.FechaHoraCierre IS NULL THEN 'En proceso'#(lf)        ELSE 'Cerrada'#(lf)    END AS Estado,#(lf)#(lf)    ISNULL(UltimoOper.Usuario, 'Sin registro') AS UltimoOperador,#(lf)#(lf)    Totales.CantidadRequerida AS NumeroPiezas,#(lf)#(lf)    CASE #(lf)        WHEN Totales.CantidadRequerida <= 50 THEN 'Sí'#(lf)        ELSE 'No'#(lf)    END AS PedidoMenorIgual50,#(lf)#(lf)    d.Nombre AS Cliente,#(lf)#(lf)    ISNULL(Marcas.MarcaPedido, 'Sin categoría') AS MarcaPedido,#(lf)#(lf)    CASE#(lf)        WHEN CONVERT(TIME(0), ds.FechaDocumento) < '13:00:00'#(lf)        THEN 'Primer turno'#(lf)        WHEN CONVERT(TIME(0), ds.FechaDocumento) < '22:00:00'#(lf)        THEN 'Segundo turno'#(lf)        ELSE 'Fuera de turno'#(lf)    END AS Supervisores#(lf)#(lf)FROM DocumentoSalida ds#(lf)#(lf)INNER JOIN Destino d #(lf)    ON ds.IDDestino = d.IDDestino#(lf)#(lf)INNER JOIN Compania c #(lf)    ON ds.IDCompania = c.IDCompania#(lf)#(lf)CROSS APPLY (#(lf)    SELECT#(lf)        SUM(dsdet.CantidadRequerida) AS CantidadRequerida,#(lf)        SUM(dsdet.CantidadSurtida) AS CantidadSurtida,#(lf)        COUNT(DISTINCT dsdet.IDProducto) AS Total_SKUs,#(lf)        MAX(dsdet.IDEstadoSurtido) AS IDEstadoSurtido#(lf)    FROM DetalleSalida dsdet#(lf)    WHERE dsdet.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)) Totales#(lf)#(lf)OUTER APPLY (#(lf)    SELECT TOP 1 1 AS Conteo#(lf)    FROM DetalleSalida dsdet#(lf)    INNER JOIN Producto p #(lf)        ON p.IDProducto = dsdet.IDProducto#(lf)    WHERE dsdet.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)      AND p.Categoria = 'SVR'#(lf)) ConteoSVR#(lf)#(lf)OUTER APPLY (#(lf)    SELECT MAX(dte.IDEstadoEmbarque) AS IDEstadoEmbarque#(lf)    FROM DetalleSalida dsdet#(lf)    LEFT JOIN DetalleEmbarque dte#(lf)        ON dsdet.IDEmbarque = dte.IDEmbarque#(lf)    WHERE dsdet.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)) Embarque#(lf)#(lf)OUTER APPLY (#(lf)    SELECT TOP 1 h.FechaHora AS FechaHoraCierre#(lf)    FROM HistTransConjunto h WITH (NOLOCK)#(lf)    WHERE h.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)      AND h.IDTipoTransaccion = 7#(lf)    ORDER BY h.FechaHora DESC#(lf)) UltimoMov#(lf)#(lf)OUTER APPLY (#(lf)    SELECT TOP 1 u.Nombre AS Usuario#(lf)    FROM (#(lf)        SELECT h.FechaHora, h.IDUsuario#(lf)        FROM HistTransConjunto h#(lf)        WHERE h.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)#(lf)        UNION ALL#(lf)#(lf)        SELECT t.FechaHora, t.IDUsuario#(lf)        FROM TransConjunto t#(lf)        WHERE t.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)    ) Movs#(lf)    INNER JOIN Usuario u#(lf)        ON u.IDUsuario = Movs.IDUsuario#(lf)    ORDER BY Movs.FechaHora DESC#(lf)) UltimoOper#(lf)#(lf)OUTER APPLY (#(lf)    SELECT MarcaPedido =#(lf)        STUFF((#(lf)            SELECT DISTINCT ', ' + #(lf)            CASE #(lf)                WHEN p2.Categoria LIKE '%ODELLA%' THEN 'ODELLA'#(lf)                ELSE LTRIM(RTRIM(p2.Categoria))#(lf)            END#(lf)            FROM DetalleSalida dsdet2#(lf)            INNER JOIN Producto p2#(lf)                ON p2.IDProducto = dsdet2.IDProducto#(lf)            WHERE dsdet2.IDDocumentoSalida = ds.IDDocumentoSalida#(lf)              AND p2.Categoria IS NOT NULL#(lf)            FOR XML PATH('')#(lf)        ), 1, 2, '')#(lf)) Marcas#(lf)#(lf)WHERE ds.IDCompania NOT IN (39, 99)   -- ✅ SE AGREGA EXCLUSIÓN DE COMPAÑÍA 99#(lf)  AND YEAR(ds.FechaDocumento) = YEAR(GETDATE());"])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
