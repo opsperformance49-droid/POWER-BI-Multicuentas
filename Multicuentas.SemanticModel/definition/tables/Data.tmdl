@@ -451,6 +451,11 @@ table Data
 			    <div style='font-size:27px; font-weight:800; color:#0f172a; margin-top:3px;'>" & CicloFmt & " h</div>
 			  </div>
 			</div>
+			"
+		lineageTag: f79eb001-0c8d-48cf-b759-7088f64ecaa7
+
+
+	measure 'Cajas por Pedido' =
 			
 			<div style='display:grid; grid-template-columns:2fr 1fr; gap:10px; margin-bottom:10px;'>
 			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:12px;'>
@@ -493,6 +498,17 @@ table Data
 			    </div>
 			  </div>
 			</div>
+			<div style='display:grid;grid-template-columns:repeat(4,1fr);gap:8px;'>
+			<div style='background:#1d4ed8;color:white;border-radius:12px;padding:10px;'><div style='font-size:11px;opacity:.85'>Peso total</div><div style='font-size:23px;font-weight:800;'>" & PesoTot & "</div></div>
+			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Cajas totales</div><div style='font-size:23px;font-weight:800;color:#0f172a;'>" & CajasTot & "</div></div>
+			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Variación peso vs AA</div><div style='font-size:23px;font-weight:800;color:" & ColorPeso & ";'>" & VarPeso & "</div></div>
+			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Variación cajas vs AA</div><div style='font-size:23px;font-weight:800;color:" & ColorCajas & ";'>" & VarCajas & "</div></div>
+			</div></div>"
+		lineageTag: 44582f32-9189-41fd-95b2-df61f0a094bc
+
+
+
+	measure 'Total Pedidos AA' =
 			
 			<div style='display:grid; grid-template-columns:repeat(4,1fr); gap:10px;'>
 			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:10px;'>
@@ -513,9 +529,10 @@ table Data
 			  </div>
 			</div>
 			
-			</div>
-			"
-		lineageTag: f79eb001-0c8d-48cf-b759-7088f64ecaa7
+			AVERAGEX(VALUES(Data[NombreCompania]), [Cajas por Pedido])
+		formatString: 0
+		lineageTag: f7e93ef9-bbc0-430b-a0e5-4efdcb4d4de2
+
 
 
 	measure 'Cajas por Pedido' =

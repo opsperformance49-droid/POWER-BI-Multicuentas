@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
-  "name": "d2e7deac15a248873db4",
+  "name": "rm_slice_comp",
   "position": {
     "x": 20,
-    "y": 225,
+    "y": 220,
     "z": 10,
     "height": 80,
-    "width": 260,
+    "width": 240,
     "tabOrder": 3000
   },
   "visual": {
