@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
-  "name": "b7d176f1893aa3a64c52",
+  "name": "lgtable_detalle_001",
   "position": {
-    "x": 320,
-    "y": 390,
+    "x": 1020,
+    "y": 440,
     "z": 10,
-    "height": 310,
-    "width": 1060,
+    "height": 260,
+    "width": 360,
     "tabOrder": 2000
   },
   "visual": {
@@ -44,6 +44,21 @@
               "queryRef": "Data.NombreCompania",
               "nativeQueryRef": "Marca",
               "displayName": "Marca"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "NombreDestino"
+                }
+              },
+              "queryRef": "Data.NombreDestino",
+              "nativeQueryRef": "Destino",
+              "displayName": "Destino"
             },
             {
               "field": {
@@ -189,50 +204,6 @@
               },
               "queryRef": "Data.HoraCaida",
               "nativeQueryRef": "HoraCaida"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "HoraCierre"
-                }
-              },
-              "queryRef": "Data.HoraCierre",
-              "nativeQueryRef": "HoraCierre"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Cajas por Pedido"
-                }
-              },
-              "queryRef": "Data.Cajas por Pedido",
-              "nativeQueryRef": "Cajas x Pedido",
-              "displayName": "Cajas x Pedido"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Peso por Pedido"
-                }
-              },
-              "queryRef": "Data.Peso por Pedido",
-              "nativeQueryRef": "Peso x Pedido",
-              "displayName": "Peso x Pedido"
             }
           ]
         }
