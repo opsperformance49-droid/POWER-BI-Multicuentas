@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "MarcaPedido"
+                  "Property": "NombreDestino"
                 }
               },
-              "queryRef": "Data.MarcaPedido",
-              "nativeQueryRef": "MarcaPedido",
+              "queryRef": "Data.NombreDestino",
+              "nativeQueryRef": "NombreDestino",
               "active": true
             }
           ]
@@ -74,7 +74,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Marca pedido'"
+                  "Value": "'Destino'"
                 }
               }
             },

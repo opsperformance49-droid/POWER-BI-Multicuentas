@@ -374,50 +374,165 @@ table Data
 
 	measure 'Dashboard HTML' =
 			
-			VAR TotalPedidos = FORMAT([Total Pedidos], "#,##0")
-			VAR FillRate = FORMAT([Fill Rate %], "0.0%")
-			VAR PiezasReq = FORMAT([Total Piezas Requeridas], "#,##0")
-			VAR PiezasSur = FORMAT([Total Piezas Surtidas], "#,##0")
-			VAR Ciclo = FORMAT([Tiempo Ciclo Promedio Hrs], "0.0")
-			VAR Entrega = FORMAT([Entrega Confirmada %], "0.0%")
-			VAR Cerrados = FORMAT([Pedidos Cerrados], "#,##0")
-			VAR EnProceso = FORMAT([Pedidos En Proceso], "#,##0")
-			VAR Cajas = FORMAT([Cajas Totales Operativas], "#,##0")
-			VAR Peso = FORMAT([Peso Total Operativo], "#,##0.00")
-			VAR VarCajas = FORMAT([Variación Cajas % vs AA], "+0.0%;-0.0%;0.0%")
-			VAR VarPeso = FORMAT([Variación Peso % vs AA], "+0.0%;-0.0%;0.0%")
-			VAR ColorPeso = IF([Variación Peso % vs AA] >= 0, "#16a34a", "#dc2626")
-			VAR ColorCajas = IF([Variación Cajas % vs AA] >= 0, "#16a34a", "#dc2626")
+			VAR TotalPedidos = [Total Pedidos]
+			VAR FillRateVal = [Fill Rate %]
+			VAR PiezasReqVal = [Total Piezas Requeridas]
+			VAR PiezasSurVal = [Total Piezas Surtidas]
+			VAR SKUsPromVal = [SKUs Promedio]
+			VAR PiezasPromVal = [Piezas Promedio]
+			VAR CerradosVal = [Pedidos Cerrados]
+			VAR EnProcesoVal = [Pedidos En Proceso]
+			VAR Antes12Val = [Pedidos Antes 12]
+			VAR Despues12Val = [Pedidos Después 12]
+			VAR Menor50Val = [Pedidos Menor Igual 50]
+			VAR Mayor50Val = [Pedidos Mayor 50]
+			VAR EntregaVal = [Entrega Confirmada %]
+			VAR CicloVal = [Tiempo Ciclo Promedio Hrs]
+			
+			VAR RendimientoVal = DIVIDE(CerradosVal, TotalPedidos, 0)
+			VAR ProductividadVal = DIVIDE(PiezasSurVal, TotalPedidos, 0)
+			VAR EficienciaVal = DIVIDE(PiezasSurVal, CicloVal, 0)
+			VAR VariacionVolumen = PiezasSurVal - PiezasReqVal
+			VAR VariacionPct = DIVIDE(VariacionVolumen, PiezasReqVal, 0)
+			
+			VAR TotalPedidosFmt = FORMAT(TotalPedidos, "#,##0")
+			VAR FillRateFmt = FORMAT(FillRateVal, "0.0%")
+			VAR PiezasReqFmt = FORMAT(PiezasReqVal, "#,##0")
+			VAR PiezasSurFmt = FORMAT(PiezasSurVal, "#,##0")
+			VAR SKUsPromFmt = FORMAT(SKUsPromVal, "0.0")
+			VAR PiezasPromFmt = FORMAT(PiezasPromVal, "0.0")
+			VAR CerradosFmt = FORMAT(CerradosVal, "#,##0")
+			VAR EnProcesoFmt = FORMAT(EnProcesoVal, "#,##0")
+			VAR Antes12Fmt = FORMAT(Antes12Val, "#,##0")
+			VAR Despues12Fmt = FORMAT(Despues12Val, "#,##0")
+			VAR Menor50Fmt = FORMAT(Menor50Val, "#,##0")
+			VAR Mayor50Fmt = FORMAT(Mayor50Val, "#,##0")
+			VAR EntregaFmt = FORMAT(EntregaVal, "0.0%")
+			VAR CicloFmt = FORMAT(CicloVal, "0.0")
+			VAR RendimientoFmt = FORMAT(RendimientoVal, "0.0%")
+			VAR ProductividadFmt = FORMAT(ProductividadVal, "#,##0.0")
+			VAR EficienciaFmt = FORMAT(EficienciaVal, "#,##0.0")
+			VAR VariacionVolFmt = FORMAT(VariacionVolumen, "#,##0")
+			VAR VariacionPctFmt = FORMAT(VariacionPct, "+0.0%;-0.0%;0.0%")
+			
+			VAR ColorVariacion = IF(VariacionVolumen >= 0, "#22c55e", "#ef4444")
+			
 			RETURN
 			"
-			<div style='font-family:Segoe UI, Arial; background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%); border:1px solid #dbeafe; border-radius:18px; padding:14px;'>
-			  <div style='font-size:26px; font-weight:800; color:#0f172a; margin-bottom:2px;'>Estatus Operativo</div>
-			  <div style='font-size:12px; color:#64748b; margin-bottom:10px;'>KPIs operativos por periodo y comparación anual</div>
+			<div style='font-family:Segoe UI, Arial; background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%); padding:18px; border-radius:20px; color:#0f172a; border:1px solid #dbeafe;'>
 			
-			  <div style='display:flex; flex-direction:column; gap:8px;'>
-			    <div style='display:grid; grid-template-columns:repeat(2,1fr); gap:8px;'>
-			      <div style='background:#1d4ed8; color:#fff; border-radius:12px; padding:10px;'><div style='font-size:11px; opacity:.85'>Pedidos</div><div style='font-size:24px; font-weight:800;'>" & TotalPedidos & "</div></div>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Fill Rate</div><div style='font-size:24px; font-weight:800; color:#0f766e;'>" & FillRate & "</div></div>
-			    </div>
+			<div style='display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px;'>
+			  <div>
+			    <div style='font-size:28px; font-weight:800; color:#0f172a;'>Dashboard Ejecutivo Operativo</div>
+			    <div style='font-size:13px; color:#475569; margin-top:2px;'>Enfoque en rendimiento, cumplimiento, tiempos, productividad, eficiencia, volumen y variaciones.</div>
+			  </div>
+			  <div style='background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:10px 12px; min-width:230px;'>
+			    <div style='font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:.4px;'>Semáforo operativo</div>
+			    <div style='font-size:13px; font-weight:700; color:#0f172a; margin-top:2px;'>Cumplimiento: " & FillRateFmt & "</div>
+			    <div style='font-size:12px; color:#334155;'>Entrega confirmada: " & EntregaFmt & "</div>
+			  </div>
+			</div>
 			
-			    <div style='display:grid; grid-template-columns:repeat(2,1fr); gap:8px;'>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Piezas surtidas</div><div style='font-size:22px; font-weight:800; color:#0f172a;'>" & PiezasSur & "</div><div style='font-size:11px; color:#94a3b8;'>Req: " & PiezasReq & "</div></div>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Ciclo / Entrega</div><div style='font-size:18px; font-weight:800; color:#0f172a;'>" & Ciclo & " h</div><div style='font-size:13px; color:#334155;'>Entrega: " & Entrega & "</div></div>
-			    </div>
-			
-			    <div style='display:grid; grid-template-columns:repeat(2,1fr); gap:8px;'>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Estado de pedidos</div><div style='font-size:15px; font-weight:700; color:#0f172a;'>Cerrados: " & Cerrados & "</div><div style='font-size:15px; font-weight:700; color:#92400e;'>En proceso: " & EnProceso & "</div></div>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Volumen logístico</div><div style='font-size:15px; font-weight:700; color:#0f172a;'>Cajas: " & Cajas & "</div><div style='font-size:15px; font-weight:700; color:#0f172a;'>Peso: " & Peso & "</div></div>
-			    </div>
-			
-			    <div style='display:grid; grid-template-columns:repeat(2,1fr); gap:8px;'>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Variación cajas vs AA</div><div style='font-size:22px; font-weight:800; color:" & ColorCajas & ";'>" & VarCajas & "</div></div>
-			      <div style='background:#fff; border:1px solid #dbeafe; border-radius:12px; padding:10px;'><div style='font-size:11px; color:#64748b;'>Variación peso vs AA</div><div style='font-size:22px; font-weight:800; color:" & ColorPeso & ";'>" & VarPeso & "</div></div>
-			    </div>
+			<div style='display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:10px;'>
+			  <div style='background:#1d4ed8; color:white; border-radius:14px; padding:12px;'>
+			    <div style='font-size:11px; opacity:.85;'>Volumen de pedidos</div>
+			    <div style='font-size:28px; font-weight:800; line-height:1.1; margin-top:3px;'>" & TotalPedidosFmt & "</div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:12px;'>
+			    <div style='font-size:11px; color:#64748b;'>Cumplimiento (Fill Rate)</div>
+			    <div style='font-size:27px; font-weight:800; color:#0f766e; margin-top:3px;'>" & FillRateFmt & "</div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:12px;'>
+			    <div style='font-size:11px; color:#64748b;'>Rendimiento de cierre</div>
+			    <div style='font-size:27px; font-weight:800; color:#0f172a; margin-top:3px;'>" & RendimientoFmt & "</div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:12px;'>
+			    <div style='font-size:11px; color:#64748b;'>Tiempo de ciclo promedio</div>
+			    <div style='font-size:27px; font-weight:800; color:#0f172a; margin-top:3px;'>" & CicloFmt & " h</div>
 			  </div>
 			</div>
 			"
 		lineageTag: f79eb001-0c8d-48cf-b759-7088f64ecaa7
+
+
+	measure 'Cajas por Pedido' =
+			
+			<div style='display:grid; grid-template-columns:2fr 1fr; gap:10px; margin-bottom:10px;'>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:12px;'>
+			    <div style='font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;'>KPIs de operación y productividad</div>
+			    <div style='display:grid; grid-template-columns:repeat(4,1fr); gap:8px;'>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Productividad (pzs/pedido)</div>
+			        <div style='font-size:21px; font-weight:800; color:#0f172a; margin-top:2px;'>" & ProductividadFmt & "</div>
+			      </div>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Eficiencia (pzs/hora)</div>
+			        <div style='font-size:21px; font-weight:800; color:#0f172a; margin-top:2px;'>" & EficienciaFmt & "</div>
+			      </div>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Cerrados / En proceso</div>
+			        <div style='font-size:21px; font-weight:800; color:#0f172a; margin-top:2px;'>" & CerradosFmt & " / " & EnProcesoFmt & "</div>
+			      </div>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Antes / Después de 12:00</div>
+			        <div style='font-size:21px; font-weight:800; color:#0f172a; margin-top:2px;'>" & Antes12Fmt & " / " & Despues12Fmt & "</div>
+			      </div>
+			    </div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:12px;'>
+			    <div style='font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;'>Volumen y variaciones</div>
+			    <div style='display:grid; grid-template-columns:1fr; gap:8px;'>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Piezas requeridas</div>
+			        <div style='font-size:21px; font-weight:800; color:#0f172a; margin-top:2px;'>" & PiezasReqFmt & "</div>
+			      </div>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Piezas surtidas</div>
+			        <div style='font-size:21px; font-weight:800; color:#0f172a; margin-top:2px;'>" & PiezasSurFmt & "</div>
+			      </div>
+			      <div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px;'>
+			        <div style='font-size:11px; color:#64748b;'>Variación volumen (sur - req)</div>
+			        <div style='font-size:21px; font-weight:800; color:" & ColorVariacion & "; margin-top:2px;'>" & VariacionVolFmt & "</div>
+			        <div style='font-size:12px; font-weight:700; color:" & ColorVariacion & ";'>" & VariacionPctFmt & "</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<div style='display:grid;grid-template-columns:repeat(4,1fr);gap:8px;'>
+			<div style='background:#1d4ed8;color:white;border-radius:12px;padding:10px;'><div style='font-size:11px;opacity:.85'>Peso total</div><div style='font-size:23px;font-weight:800;'>" & PesoTot & "</div></div>
+			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Cajas totales</div><div style='font-size:23px;font-weight:800;color:#0f172a;'>" & CajasTot & "</div></div>
+			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Variación peso vs AA</div><div style='font-size:23px;font-weight:800;color:" & ColorPeso & ";'>" & VarPeso & "</div></div>
+			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Variación cajas vs AA</div><div style='font-size:23px;font-weight:800;color:" & ColorCajas & ";'>" & VarCajas & "</div></div>
+			</div></div>"
+		lineageTag: 44582f32-9189-41fd-95b2-df61f0a094bc
+
+
+
+	measure 'Total Pedidos AA' =
+			
+			<div style='display:grid; grid-template-columns:repeat(4,1fr); gap:10px;'>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:10px;'>
+			    <div style='font-size:11px; color:#64748b;'>Complejidad ≤ 50 piezas</div>
+			    <div style='font-size:22px; font-weight:800; color:#0f172a; margin-top:2px;'>" & Menor50Fmt & "</div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:10px;'>
+			    <div style='font-size:11px; color:#64748b;'>Complejidad > 50 piezas</div>
+			    <div style='font-size:22px; font-weight:800; color:#0f172a; margin-top:2px;'>" & Mayor50Fmt & "</div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:10px;'>
+			    <div style='font-size:11px; color:#64748b;'>SKUs promedio por pedido</div>
+			    <div style='font-size:22px; font-weight:800; color:#0f172a; margin-top:2px;'>" & SKUsPromFmt & "</div>
+			  </div>
+			  <div style='background:white; border:1px solid #dbeafe; border-radius:14px; padding:10px;'>
+			    <div style='font-size:11px; color:#64748b;'>Piezas promedio por pedido</div>
+			    <div style='font-size:22px; font-weight:800; color:#0f172a; margin-top:2px;'>" & PiezasPromFmt & "</div>
+			  </div>
+			</div>
+			
+			AVERAGEX(VALUES(Data[NombreCompania]), [Cajas por Pedido])
+		formatString: 0
+		lineageTag: f7e93ef9-bbc0-430b-a0e5-4efdcb4d4de2
+
 
 
 	measure 'Cajas por Pedido' =
@@ -515,41 +630,6 @@ table Data
 			<div style='background:white;border:1px solid #dbeafe;border-radius:12px;padding:10px;'><div style='font-size:11px;color:#64748b'>Variación cajas vs AA</div><div style='font-size:23px;font-weight:800;color:" & ColorCajas & ";'>" & VarCajas & "</div></div>
 			</div></div>"
 		lineageTag: 44582f32-9189-41fd-95b2-df61f0a094bc
-
-
-
-	measure 'Total Pedidos AA' =
-			
-			CALCULATE([Total Pedidos], DATEADD(Data[FechaDocumento], -1, YEAR))
-		formatString: 0
-		lineageTag: 1de7adf9-af90-4f74-b455-7c50bb9374b6
-
-	measure 'Inyección Piezas' =
-			
-			[Total Piezas Surtidas]
-		lineageTag: b68f59db-8d42-41fa-bd2e-aeb493e23fdc
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
-	measure 'Inyección Piezas AA' =
-			
-			CALCULATE([Inyección Piezas], DATEADD(Data[FechaDocumento], -1, YEAR))
-		lineageTag: f4cb8d43-8e75-4d00-a645-a0b643fbd260
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
-	measure 'Peso Promedio por Compañía' =
-			
-			AVERAGEX(VALUES(Data[NombreCompania]), [Peso por Pedido])
-		lineageTag: 9a9f58fd-e4f0-4a67-aa68-c41e4e3d2f91
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
-	measure 'Cajas Promedio por Compañía' =
-			
-			AVERAGEX(VALUES(Data[NombreCompania]), [Cajas por Pedido])
-		formatString: 0
-		lineageTag: f7e93ef9-bbc0-430b-a0e5-4efdcb4d4de2
 
 
 	column IDDocumentoSalida

@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "NombreCompania"
+                  "Property": "NombreDestino"
                 }
               },
-              "queryRef": "Data.NombreCompania",
-              "nativeQueryRef": "NombreCompania",
+              "queryRef": "Data.NombreDestino",
+              "nativeQueryRef": "NombreDestino",
               "active": true
             }
           ]
@@ -47,20 +47,6 @@
               },
               "queryRef": "Data.Peso por Pedido",
               "nativeQueryRef": "Peso por Pedido"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Peso Promedio por Compañía"
-                }
-              },
-              "queryRef": "Data.Peso Promedio por Compañía",
-              "nativeQueryRef": "Peso Promedio por Compañía"
             }
           ]
         }

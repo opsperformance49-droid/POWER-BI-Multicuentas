@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "FechaDocumento"
+                  "Property": "NombreCompania"
                 }
               },
-              "queryRef": "Data.FechaDocumento",
-              "nativeQueryRef": "FechaDocumento",
+              "queryRef": "Data.NombreCompania",
+              "nativeQueryRef": "NombreCompania",
               "active": true
             }
           ]
@@ -42,25 +42,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Cajas Totales Operativas"
+                  "Property": "Cajas por Pedido"
                 }
               },
-              "queryRef": "Data.Cajas Totales Operativas",
-              "nativeQueryRef": "Cajas Totales Operativas"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Cajas Totales Operativas AA"
-                }
-              },
-              "queryRef": "Data.Cajas Totales Operativas AA",
-              "nativeQueryRef": "Cajas Totales Operativas AA"
+              "queryRef": "Data.Cajas por Pedido",
+              "nativeQueryRef": "Cajas por Pedido"
             }
           ]
         }
