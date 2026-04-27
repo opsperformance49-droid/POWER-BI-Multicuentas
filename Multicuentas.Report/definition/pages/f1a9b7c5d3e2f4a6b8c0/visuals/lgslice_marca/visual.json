@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
-  "name": "d2e7deac15a248873db4",
+  "name": "lgslice_marca",
   "position": {
     "x": 20,
-    "y": 225,
+    "y": 215,
     "z": 10,
-    "height": 80,
-    "width": 260,
+    "height": 75,
+    "width": 240,
     "tabOrder": 3000
   },
   "visual": {
@@ -74,7 +74,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Compañía'"
+                  "Value": "'Marca'"
                 }
               }
             },

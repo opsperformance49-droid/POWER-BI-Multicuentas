@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
-  "name": "6290d8af841be9a09375",
+  "name": "rm_slice_fecha",
   "position": {
     "x": 20,
     "y": 120,
     "z": 10,
-    "height": 90,
-    "width": 260,
+    "height": 85,
+    "width": 240,
     "tabOrder": 0
   },
   "visual": {
