@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
   "name": "b7d176f1893aa3a64c52",
   "position": {
-    "x": 320,
-    "y": 390,
-    "z": 10,
-    "height": 310,
-    "width": 1060,
+    "x": 124.13793103448276,
+    "y": 248.27586206896552,
+    "z": 3000,
+    "height": 462.85714285714283,
+    "width": 1249.3596059113302,
     "tabOrder": 2000
   },
   "visual": {
@@ -203,36 +203,6 @@
               },
               "queryRef": "Data.HoraCierre",
               "nativeQueryRef": "HoraCierre"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Cajas por Pedido"
-                }
-              },
-              "queryRef": "Data.Cajas por Pedido",
-              "nativeQueryRef": "Cajas x Pedido",
-              "displayName": "Cajas x Pedido"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Peso por Pedido"
-                }
-              },
-              "queryRef": "Data.Peso por Pedido",
-              "nativeQueryRef": "Peso x Pedido",
-              "displayName": "Peso x Pedido"
             }
           ]
         }

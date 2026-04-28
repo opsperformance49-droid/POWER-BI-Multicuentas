@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
   "name": "27200e06107116457899",
   "position": {
-    "x": 320,
-    "y": 20,
-    "z": 10,
-    "height": 350,
-    "width": 1060,
+    "x": 133.75,
+    "y": 13.75,
+    "z": 1000,
+    "height": 222.5,
+    "width": 1157.5,
     "tabOrder": 1000
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Dashboard HTML"
+                  "Property": "HTML Compañias"
                 }
               },
-              "queryRef": "Data.Dashboard HTML",
-              "nativeQueryRef": "Dashboard HTML"
+              "queryRef": "Data.HTML Compañias",
+              "nativeQueryRef": "HTML Compañias"
             }
           ]
         }

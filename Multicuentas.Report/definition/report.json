@@ -68,6 +68,11 @@
       "type": "RegisteredResources",
       "items": [
         {
+          "name": "FILTRO_ICON46268514225050894.png",
+          "path": "FILTRO_ICON46268514225050894.png",
+          "type": "Image"
+        },
+        {
           "name": "Power_BI_Theme_Generator_-_BIB20675387175131543.json",
           "path": "Power_BI_Theme_Generator_-_BIB20675387175131543.json",
           "type": "CustomTheme"

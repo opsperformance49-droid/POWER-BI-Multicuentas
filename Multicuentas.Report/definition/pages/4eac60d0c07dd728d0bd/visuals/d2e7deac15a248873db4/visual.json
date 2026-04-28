@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.8.0/schema.json",
   "name": "d2e7deac15a248873db4",
   "position": {
-    "x": 20,
-    "y": 225,
-    "z": 10,
-    "height": 80,
-    "width": 260,
+    "x": 33.816425120772919,
+    "y": 191.30434782608697,
+    "z": 4000,
+    "height": 57.0048309178744,
+    "width": 140.09661835748793,
     "tabOrder": 3000
   },
   "visual": {
@@ -74,7 +74,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Compañía'"
+                  "Value": "'Compania'"
                 }
               }
             },
