@@ -27,7 +27,16 @@
                 }
               },
               "queryRef": "Data.FechaDocumento",
-              "nativeQueryRef": "FechaDocumento",
+              "nativeQueryRef": "FechaDocumento"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
                   "Property": "NombreCompania"
                 }
               },
