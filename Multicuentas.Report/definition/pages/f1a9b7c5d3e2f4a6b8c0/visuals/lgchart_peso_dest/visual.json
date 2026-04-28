@@ -28,6 +28,11 @@
               },
               "queryRef": "Data.NombreCompania",
               "nativeQueryRef": "NombreCompania",
+                  "Property": "NombreDestino"
+                }
+              },
+              "queryRef": "Data.NombreDestino",
+              "nativeQueryRef": "NombreDestino",
               "active": true
             }
           ]

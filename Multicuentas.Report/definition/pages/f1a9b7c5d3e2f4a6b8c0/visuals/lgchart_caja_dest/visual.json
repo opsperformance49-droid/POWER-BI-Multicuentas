@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "NombreCompania"
+                  "Property": "NombreDestino"
                 }
               },
-              "queryRef": "Data.NombreCompania",
-              "nativeQueryRef": "NombreCompania",
+              "queryRef": "Data.NombreDestino",
+              "nativeQueryRef": "NombreDestino",
               "active": true
             }
           ]
@@ -47,20 +47,6 @@
               },
               "queryRef": "Data.Cajas por Pedido",
               "nativeQueryRef": "Cajas por Pedido"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "Cajas Promedio por Compañía"
-                }
-              },
-              "queryRef": "Data.Cajas Promedio por Compañía",
-              "nativeQueryRef": "Cajas Promedio por Compañía"
             }
           ]
         }

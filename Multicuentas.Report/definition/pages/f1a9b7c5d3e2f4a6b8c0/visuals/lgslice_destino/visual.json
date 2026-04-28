@@ -28,6 +28,11 @@
               },
               "queryRef": "Data.MarcaPedido",
               "nativeQueryRef": "MarcaPedido",
+                  "Property": "NombreDestino"
+                }
+              },
+              "queryRef": "Data.NombreDestino",
+              "nativeQueryRef": "NombreDestino",
               "active": true
             }
           ]
@@ -75,6 +80,7 @@
               "expr": {
                 "Literal": {
                   "Value": "'Marca pedido'"
+                  "Value": "'Destino'"
                 }
               }
             },
