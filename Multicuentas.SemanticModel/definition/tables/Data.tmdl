@@ -521,13 +521,7 @@ table Data
 
 	measure 'Total Pedidos AA' =
 			
-			VAR PedidosAA =
-			    CALCULATE(
-			        [Total Pedidos],
-			        DATEADD(Data[FechaDocumento], -1, YEAR)
-			    )
-			RETURN
-			    COALESCE(PedidosAA, 0)
+			CALCULATE([Total Pedidos], DATEADD(Data[FechaDocumento], -1, YEAR))
 		formatString: 0
 		lineageTag: 1de7adf9-af90-4f74-b455-7c50bb9374b6
 
@@ -859,3 +853,4 @@ table Data
 	annotation PBI_ResultType = Table
 
 	annotation PBI_NavigationStepName = Navigation
+
