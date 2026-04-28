@@ -27,7 +27,16 @@
                 }
               },
               "queryRef": "Data.FechaDocumento",
-              "nativeQueryRef": "FechaDocumento",
+              "nativeQueryRef": "FechaDocumento"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
                   "Property": "NombreCompania"
                 }
               },
@@ -66,6 +75,15 @@
               },
               "queryRef": "Data.Total Pedidos AA",
               "nativeQueryRef": "Total Pedidos AA"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
                   "Property": "Peso por Pedido"
                 }
               },
